@@ -1,21 +1,24 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 
 
 public class GameOfLife extends JFrame {
-     private final int size = 50; // size of the cell grid
-     private final Cell[][] cells = new Cell[size][size]; // grid of cells
+     private final int size = 50; // Size of the cell grid
+     private final Cell[][] cells = new Cell[size][size]; // Used to prepare a grid of Cell objects
      private final JButton startStopButton = new JButton("Start/Stop");
      private final JButton stepButton = new JButton("Step");
      private final JButton speedButton = new JButton("Speed");
      private final JButton saveButton = new JButton("Save");
-     private Timer timer;
-     private boolean running = false;
-     private int speed = 500; // speed of the simulation in milliseconds
 
-     public GameOfLife() {
+     // Declare integers for x, y and z (conditions for cells to become live/dead)
+     private int x, y, z;
+
+     public GameOfLife(int x, int y, int z) {
+          this.x = x;
+          this.y = y;
+          this.z = z;
+
           setTitle("Game of Life");
           setSize(800, 600);
           setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -40,17 +43,15 @@ public class GameOfLife extends JFrame {
           add(gridPanel, BorderLayout.CENTER);
           add(controlPanel, BorderLayout.SOUTH);
 
-          initializeListeners();
+          
+          setVisible(true);
      }
 
-     private void initializeListeners() {
-          
-     }
 
      public static void main(String[] args) {
           // Used by convention to avoid potential threading issues
           SwingUtilities.invokeLater(() -> {
-               new GameOfLife().setVisible(true);
+               new MenuScreen().setVisible(true);
           });
      }
 }

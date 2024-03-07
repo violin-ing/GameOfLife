@@ -5,3 +5,13 @@
 - Step button
 - Save (Archie)
 - Loading .gol file in (Archie)
+
+
+ENHANCEMENTS
+1. Customize grid size (Eugene)
+2. Play/pause and speed button (Archie)
+3. Save/load buttons (Archie)
+4. File format that saves inital x,y,z and grid size (Munsif)
+5. Edge behaviour (Munsif)
+
+6. Heirarchical menu structure: Main menu has 2 options: start new game/ load previous game. then variable assignment screen, then game (archie)

@@ -16,6 +16,7 @@ class Cell extends JPanel {
           });
      }
 
+
      private void toggleState() {
           alive = !alive; // If the cell is 'alive', it will be set to 'dead', and vice versa
           if (alive) {
@@ -23,6 +24,23 @@ class Cell extends JPanel {
           } else {
                setBackground(Color.WHITE);
           }
+     }
+
+
+     public boolean isAlive() {
+          return alive;
+     }
+
+
+     public void setAlive(boolean alive) {
+          this.alive = alive;
+          setBackground(alive ? Color.BLACK : Color.WHITE); // Set color based on state
+     }
+
+     
+     public void setDead() {
+          this.alive = false;
+          setBackground(Color.WHITE);
      }
  }
  

@@ -1,15 +1,24 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 
 public class GameOfLife extends JFrame {
      private Cell[][] cells;
      private final JButton startStopButton = new JButton("Start/Stop");
      private final JButton stepButton = new JButton("Step");
-     private final JButton speedButton = new JButton("Speed");
+     private final JButton speedUpButton = new JButton("Speed Up");
+     private final JButton speedDownButton = new JButton("Speed Down");
      private final JButton saveButton = new JButton("Save");
      private final JButton clearButton = new JButton("Clear");
+     private final JButton loadButton = new JButton("Load");
+     private boolean gameRunning = false;
+
 
      // Declare integers for x, y and z (conditions for cells to become live/dead)
      private int x, y, z;
@@ -43,9 +52,12 @@ public class GameOfLife extends JFrame {
           JPanel controlPanel = new JPanel();
           controlPanel.add(startStopButton);
           controlPanel.add(stepButton);
-          controlPanel.add(speedButton);
+          controlPanel.add(speedUpButton);
+          controlPanel.add(speedDownButton);
           controlPanel.add(saveButton);
+          controlPanel.add(loadButton);
           controlPanel.add(clearButton);
+
 
           stepButton.addActionListener(new ActionListener() {
                @Override
@@ -63,19 +75,52 @@ public class GameOfLife extends JFrame {
                }
           };
 
-          //instantiate new timer, with delay initially 300 TODO: speed button changes delay
+          //instantiate new timer, with delay initially 300
           Timer timer = new Timer(300, stepper );
           timer.setRepeats(true);
           
-          startStopButton.addActionListener(new ActionListener() {
+          startStopButton.addActionListener(new ActionListener() { //if gol is running and button pressed, stop. also set clickable to false
                public void actionPerformed(ActionEvent e){
-                    if (timer.isRunning()){timer.stop();} //if gol is running and button pressed, stop
-                    else{timer.start();} //if gol not running and button pressed, start
+                    if (timer.isRunning()){
+                         timer.stop();
+                         stepButton.setEnabled(true);
+                         saveButton.setEnabled(true);
+                         gameRunning = false;
+                         for (Cell[] c1:cells){
+                              for (Cell c2:c1){
+                                   c2.setClickable(true);
+                              }
+                         }
+                    }
+                    
+                    
+                    else{ //if gol not running and button pressed, start. also set clickable to false
+                         timer.start(); 
+                         gameRunning = true; 
+                         stepButton.setEnabled(false);
+                         saveButton.setEnabled(false);
+                         for (Cell[] c1:cells){
+                              for (Cell c2:c1){
+                                   c2.setClickable(false);stepButton.setEnabled(false);
+                              }
+                         } 
+                    } 
                } 
           });
 
+          speedUpButton.addActionListener(new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                    if (timer.getDelay() >= 100){timer.setDelay(timer.getDelay()-25);}
+               }
+           });
 
-           
+           speedDownButton.addActionListener(new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                   if (timer.getDelay() <= 400){timer.setDelay(timer.getDelay()+25);}
+               }
+           });
 
            clearButton.addActionListener(new ActionListener() {
                @Override
@@ -83,6 +128,23 @@ public class GameOfLife extends JFrame {
                     clear();
                }
            });
+
+          saveButton.addActionListener(new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                    try{saveConfiguration();}
+                    catch (FileNotFoundException ex) {}
+               }
+          });
+
+          loadButton.addActionListener(new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                    try{loadGol();}
+                    catch (FileNotFoundException ex) {}
+                    catch (IOException ex){}
+               }
+          });
            
           add(gridPanel, BorderLayout.CENTER);
           add(controlPanel, BorderLayout.SOUTH);
@@ -154,6 +216,53 @@ public class GameOfLife extends JFrame {
                     cells[i][j].setDead();
                }
           }
+     }
+
+     public void saveConfiguration() throws FileNotFoundException{
+          PrintWriter writer = new PrintWriter("mostRecentSave.gol");
+               
+               for (int i=0; i<size; i++){
+                    for (int j=0; j<size; j++){
+                        if (cells[i][j].isAlive()){
+                            writer.print("o");
+                        }
+                        else{
+                            writer.print(".");
+                        }
+        
+                         if (j%(size-1) == 0 && j!=0){
+                              writer.print("\n");
+                         }
+        
+                    }
+               }
+
+          writer.close();
+          System.exit(0);
+
+
+     }
+
+     public void loadGol() throws FileNotFoundException, IOException{
+
+        BufferedReader reader = new BufferedReader(new FileReader("mostRecentSave.gol"));
+        String line = "";
+
+        for (int i = 0; i < size; i++){
+            line = reader.readLine();
+            for(int j = 0; j < size; j++) {
+
+                if ("o".compareTo(Character.toString(line.charAt(j))) == 0 ){
+                    cells[i][j].setAlive(true);
+                }
+
+                else{
+                    cells[i][j].setAlive(false);
+                }    
+          }
+        }
+
+        reader.close();
      }
 
 

@@ -5,13 +5,14 @@ import java.awt.event.*;
 
 class Cell extends JPanel {
      private boolean alive = false;
+     private boolean clickable = true;
 
      public Cell(int x, int y) {
           setBorder(BorderFactory.createLineBorder(Color.BLACK));
           addMouseListener(new MouseAdapter() {
                @Override
                public void mouseClicked(MouseEvent e) {
-                    toggleState(); // Change cell state upon mouse click
+                    if (clickable){toggleState();} // Change cell state upon mouse click
                }
           });
      }
@@ -41,6 +42,10 @@ class Cell extends JPanel {
      public void setDead() {
           this.alive = false;
           setBackground(Color.WHITE);
+     }
+
+     public void setClickable(boolean clickable){
+          this.clickable = clickable;
      }
  }
  

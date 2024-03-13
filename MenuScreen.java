@@ -47,7 +47,6 @@ public class MenuScreen extends JFrame {
 
                          setVisible(false);
                          dispose();
-
                          new GameOfLife(x, y, z, gridSize);
                     } else {
                          JOptionPane.showMessageDialog(
@@ -73,5 +72,7 @@ public class MenuScreen extends JFrame {
           buttonPanel.add(enterButton);
           add(inputPanel, BorderLayout.CENTER);
           add(buttonPanel, BorderLayout.SOUTH);
+
+          setVisible(true);
      }
 }

@@ -26,7 +26,7 @@ public class ValidateInput {
           if (minNeighbours < 1) return false;
           if (maxNeighbours > 8) return false;
           if (minNeighbours >= maxNeighbours) return false;
-          if (comeAliveNeighbours < minNeighbours && comeAliveNeighbours > maxNeighbours) return false;
+          if (comeAliveNeighbours < minNeighbours || comeAliveNeighbours > maxNeighbours) return false;
 
           /*
            * Minimum grid size = 10

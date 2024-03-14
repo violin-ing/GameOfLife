@@ -1,4 +1,5 @@
 import javax.swing.*;
+
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -29,14 +30,14 @@ public class GameFunctions {
 
                     // Apply the rules of the game
                     if (cells[i][j].isAlive()) {
-                         // A live cell with 2 to 3 live neighbors remains live
+                         // A live cell with x to y live neighbors remains live
                          if (liveNeighbors >= x && liveNeighbors <= y) {
                               nextGeneration[i][j] = true;
                          } else {
                               nextGeneration[i][j] = false;
                          }
                     } else {
-                         // A dead cell with exactly 3 live neighbors becomes live
+                         // A dead cell with exactly z live neighbors becomes live
                          if (liveNeighbors == z) {
                               nextGeneration[i][j] = true;
                          } else {
@@ -113,13 +114,28 @@ public class GameFunctions {
           }
      }
 
-     public static void loadGol(String path, Cell[][] cells, int size) throws IOException {
+     public static Cell[][] loadGol(String path) throws IOException {
           BufferedReader reader = new BufferedReader(new FileReader(path));
           String line;
 
-          for (int i = 0; i < size; i++) {
+          line = reader.readLine();
+          int size = line.length();
+          Cell[][] cells = new Cell[size][size];
+          for(int x = 0; x < size; x++) {
+               cells[0][x] = new Cell(0, x);
+               if ("o".compareTo(Character.toString(line.charAt(x))) == 0) {
+                    cells[0][x].setAlive(true);
+               } 
+               else{
+               cells[0][x].setAlive(false);
+               }    
+          }
+
+          for (int i = 1; i < size; i++) {
                line = reader.readLine();
                for(int j = 0; j < size; j++) {
+
+                    cells[i][j] = new Cell(i, j);
 
                     if ("o".compareTo(Character.toString(line.charAt(j))) == 0) {
                          cells[i][j].setAlive(true);
@@ -129,10 +145,33 @@ public class GameFunctions {
                     }    
                }
           }
+
+          while ((line = reader.readLine()) != null && !line.isEmpty()){
+               String[] parts = line.split("=");
+                    if (parts.length == 2) {
+                         String key = parts[0];
+                         String value = parts[1];
+                         if (key.equals("x")) {
+                              GameOfLife.setXVal(Integer.parseInt(value));
+                         } else if (key.equals("y")) {
+                              GameOfLife.setYVal(Integer.parseInt(value));
+                         } else if (key.equals("z")) {
+                              GameOfLife.setZVal(Integer.parseInt(value));
+                         } else if (key.equals("size")) {
+                              //GameOfLife.size = Integer.parseInt(value);
+                         } else if (key.equals("description")) {
+                              GameOfLife.setDescription(value);
+                         }
+                    }
+
+
+          }
+
           reader.close();
+          return cells;
      }
 
-     // Helper method to count the number of live neighbors for a given cell
+     // Counts the number of live neighbors for a given cell
      private static int countLiveNeighbors(Cell[][] cells, int size, int x, int y) {
           int count = 0;
           for (int i = -1; i <= 1; i++) {

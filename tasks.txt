@@ -1,0 +1,6 @@
+1. README file
+2. Add comments to code
+3. Add .gol example files with good descriptions
+4. Git bundle
+5. Finish testing in report
+6. Complete individual report

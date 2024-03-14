@@ -1,13 +1,13 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
 
-
 public class SaveScreen extends JFrame { // FRONTEND FOR SAVE SCREEN
-    private static String fileName, description;
+    private static String fileName;
 
-    public SaveScreen(int size, Cell[][] cellArray) {
+    public SaveScreen(int size, Cell[][] cellArray, int x, int y, int z) {
 
         setTitle("Save Configuration");
         setSize(500, 200);
@@ -52,18 +52,22 @@ public class SaveScreen extends JFrame { // FRONTEND FOR SAVE SCREEN
 
                 if (FileSaver.validateInput(fileNameString)) {
                     fileName = fileNameString;
-                    try{FileSaver.saveConfiguration(fileName, size, cellArray);}
-                    catch (FileNotFoundException e){
-                        JOptionPane.showMessageDialog(
-                        SaveScreen.this, "File Could Not Be Saved", "Input Error", JOptionPane.ERROR_MESSAGE);
-                        System.exit(0);
-                    }
+                    JFileChooser directoryChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+                    directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    int dialog = directoryChooser.showSaveDialog(null);
+                    if (dialog == JFileChooser.APPROVE_OPTION){
+                        String directoryPath = directoryChooser.getSelectedFile().getAbsolutePath();
 
+                        try{FileSaver.saveConfiguration(directoryPath, fileName, size, cellArray, x, y, z , description);}
+                        catch (FileNotFoundException e){
+                            JOptionPane.showMessageDialog(
+                            SaveScreen.this, "File Could Not Be Saved", "Input Error", JOptionPane.ERROR_MESSAGE);
+                            System.exit(0);
+                        } 
+                    }
                     setVisible(false);
                     dispose();
-                }
-                    
-                else{
+                } else{
                     JOptionPane.showMessageDialog(
                         SaveScreen.this, 
                         "Please ensure that your file name is valid", 
